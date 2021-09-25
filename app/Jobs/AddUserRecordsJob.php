@@ -14,15 +14,16 @@ use Illuminate\Contracts\Queue\ShouldBeUnique;
 class AddUserRecordsJob implements ShouldQueue
 {
     use Batchable, Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
-
+    public $chunkSize;
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct($chunkSize)
     {
-        //
+        // Initialising the chunkSize passed from the job Object
+        $this->chunkSize = $chunkSize;
     }
 
     /**
@@ -33,6 +34,6 @@ class AddUserRecordsJob implements ShouldQueue
     public function handle()
     {
       // Handle Job in batch of 10k
-      User::factory(10000)->create();
+      User::factory($this->chunkSize)->create();
     }
 }
